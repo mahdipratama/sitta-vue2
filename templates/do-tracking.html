@@ -1,0 +1,49 @@
+<template id="tpl-tracking">
+  <div>
+    <div class="card">
+      <h2>Tracking Delivery Order (DO)</h2>
+      <div class="search-row">
+        <input type="text" v-model="keyword"
+               placeholder="Cari berdasarkan Nomor DO atau NIM, lalu tekan Enter"
+               @keyup.enter="search"
+               @keyup.esc="clear">
+        <button class="btn btn-primary" @click="search">Cari</button>
+        <button class="btn" @click="clear">Reset</button>
+      </div>
+      <p class="muted">Enter = cari, Esc = reset pencarian.</p>
+    </div>
+
+    <p v-if="!hasSearched" class="muted">Masukkan Nomor DO atau NIM untuk melihat status pengiriman.</p>
+    <p v-else-if="results.length === 0" class="error-text">Data untuk "{{ submitted }}" tidak ditemukan.</p>
+
+    <div class="card do-item" v-for="d in results" :key="d.nomorDO">
+      <h3>{{ d.nomorDO }}</h3>
+      <div><strong>Status terakhir:</strong> {{ statusTerakhir(d) }}</div>
+      <div class="do-meta">
+        <div><span>NIM</span>{{ d.nim }}</div>
+        <div><span>Nama</span>{{ d.nama }}</div>
+        <div><span>Ekspedisi</span>{{ d.ekspedisi }}</div>
+        <div><span>Paket</span>{{ namaPaket(d.paket) }}</div>
+        <div><span>Tanggal Kirim</span>{{ d.tanggalKirim | tanggalIndo }}</div>
+        <div><span>Total Harga</span>{{ d.total | rupiah }}</div>
+      </div>
+
+      <h4>Perjalanan Pengiriman</h4>
+      <ul class="timeline">
+        <li v-for="(p, i) in d.perjalanan" :key="i">
+          <time>{{ p.waktu }}</time>
+          {{ p.keterangan }}
+        </li>
+      </ul>
+
+      <div class="progress-form">
+        <input type="text" placeholder="Keterangan progress baru..."
+               :value="progressInput[d.nomorDO] || ''"
+               @input="setProgressText(d.nomorDO, $event.target.value)"
+               @keyup.enter="addProgress(d)">
+        <button class="btn btn-primary" @click="addProgress(d)">Tambah Progress</button>
+      </div>
+      <span class="error-text" v-if="progressInput[d.nomorDO + '_err']">Keterangan wajib diisi.</span>
+    </div>
+  </div>
+</template>

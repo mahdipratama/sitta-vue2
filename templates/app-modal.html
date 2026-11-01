@@ -1,0 +1,12 @@
+<template id="tpl-modal">
+  <div class="modal-backdrop" v-if="visible" @click.self="close(false)">
+    <div class="modal" role="dialog" aria-modal="true">
+      <h3>{{ title }}</h3>
+      <p>{{ message }}</p>
+      <div class="modal-actions">
+        <button v-if="mode === 'confirm'" class="btn" @click="close(false)">Batal</button>
+        <button :class="['btn', mode === 'confirm' ? 'btn-danger' : 'btn-primary']" @click="close(true)">{{ okText }}</button>
+      </div>
+    </div>
+  </div>
+</template>

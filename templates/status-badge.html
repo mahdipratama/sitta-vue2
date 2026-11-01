@@ -1,0 +1,7 @@
+<template id="tpl-badge">
+  <span class="badge">
+    <span v-if="status === 'aman'" class="badge-aman">&#10003; Aman</span>
+    <span v-else-if="status === 'menipis'" class="badge-menipis">&#9888; Menipis</span>
+    <span v-else class="badge-kosong">&#9940; Kosong</span>
+  </span>
+</template>

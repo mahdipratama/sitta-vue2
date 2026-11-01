@@ -1,0 +1,58 @@
+<template id="tpl-order">
+  <div class="card" @keyup.enter="submit">
+    <h2>Pemesanan Bahan Ajar (Input Delivery Order)</h2>
+    <div class="form-grid">
+      <div class="field">
+        <label>Nomor DO (otomatis)</label>
+        <input type="text" :value="nextNumber" readonly>
+      </div>
+      <div class="field">
+        <label>NIM</label>
+        <input type="text" v-model="form.nim" :class="{ invalid: errors.nim }">
+        <span class="error-text" v-if="errors.nim">{{ errors.nim }}</span>
+      </div>
+      <div class="field">
+        <label>Nama</label>
+        <input type="text" v-model="form.nama" :class="{ invalid: errors.nama }">
+        <span class="error-text" v-if="errors.nama">{{ errors.nama }}</span>
+      </div>
+      <div class="field">
+        <label>Ekspedisi</label>
+        <select v-model="form.ekspedisi" :class="{ invalid: errors.ekspedisi }">
+          <option value="" disabled>Pilih ekspedisi</option>
+          <option v-for="e in ekspedisi" :key="e.kode" :value="e.nama">{{ e.nama }}</option>
+        </select>
+        <span class="error-text" v-if="errors.ekspedisi">{{ errors.ekspedisi }}</span>
+      </div>
+      <div class="field">
+        <label>Tanggal Kirim</label>
+        <input type="date" v-model="form.tanggalKirim" :class="{ invalid: errors.tanggalKirim }">
+        <span class="muted">{{ form.tanggalKirim | tanggalIndo }}</span>
+        <span class="error-text" v-if="errors.tanggalKirim">{{ errors.tanggalKirim }}</span>
+      </div>
+    </div>
+
+    <div class="field" style="margin-top: 12px">
+      <label>Paket Bahan Ajar</label>
+      <select v-model="form.paketKode" :class="{ invalid: errors.paketKode }">
+        <option value="" disabled>Pilih paket</option>
+        <option v-for="p in paket" :key="p.kode" :value="p.kode">{{ p.kode }} - {{ p.nama }}</option>
+      </select>
+      <span class="error-text" v-if="errors.paketKode">{{ errors.paketKode }}</span>
+
+      <div class="paket-detail" v-if="selectedPaket">
+        <strong>Isi paket {{ selectedPaket.nama }}:</strong>
+        <ul>
+          <li v-for="(kode, i) in selectedPaket.isi" :key="kode">{{ i + 1 }}. {{ kode }}</li>
+        </ul>
+      </div>
+    </div>
+
+    <p><strong>Total Harga:</strong> {{ totalHarga | rupiah }}</p>
+
+    <div class="actions">
+      <button class="btn btn-primary" @click="submit">Buat Delivery Order (Enter)</button>
+      <button class="btn" @click="reset">Reset</button>
+    </div>
+  </div>
+</template>
